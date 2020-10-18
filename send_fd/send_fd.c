@@ -49,13 +49,13 @@ int  recvFd(int pipeFd,int *fd)
     cmsg->cmsg_len = cmsgLen;
     cmsg->cmsg_level = SOL_SOCKET;
     cmsg->cmsg_type = SCM_RIGHTS;
+    
     msg.msg_control = cmsg;
     msg.msg_controllen = cmsgLen;
     int ret;
     ret = recvmsg(pipeFd,&msg,0);
     ERROR_CHECK(ret,-1,"recvmsg");
     *fd = *(int*)CMSG_DATA(cmsg);
-    
     return 0;
 }
 
@@ -74,7 +74,7 @@ int main(int argc,char* argv[])
         printf("I am child %d\n",fd);
         char buf[128]={0};
         read(fd,buf,sizeof(buf));
-        printf("I am chid ,buf = %s\n",buf);
+        printf("I am child ,buf = %s\n",buf);
     }else{
         close(fds[0]); //父进程要写
         int fd=open("file",O_RDWR);
